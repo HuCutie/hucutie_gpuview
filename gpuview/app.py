@@ -24,8 +24,6 @@ abs_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_path, 'views')
 TEMPLATE_PATH.insert(0, abs_views_path)
 
-EXCLUDE_SELF = False  # Do not report to `/gpustat` calls.
-
 
 @app.route('/')
 def index():
@@ -48,10 +46,7 @@ def report_gpustat():
             raise TypeError(type(obj))
 
     response.content_type = 'application/json'
-    if EXCLUDE_SELF:
-        resp = {'error': 'Excluded self!'}
-    else:
-        resp = core.my_gpustat()
+    resp = core.my_gpustat()
     return json.dumps(resp, default=_date_handler)
 
 
@@ -60,15 +55,10 @@ def main():
     args = parser.parse_args()
 
     if 'run' == args.action:
-        core.safe_zone(args.safe_zone)
-        global EXCLUDE_SELF
-        EXCLUDE_SELF = args.exclude_self
         app.run(host=args.host, port=args.port, debug=args.debug)
     elif 'service' == args.action:
         core.install_service(host=args.host,
-                             port=args.port,
-                             safe_zone=args.safe_zone,
-                             exclude_self=args.exclude_self)
+                             port=args.port)
     elif 'add' == args.action:
         core.add_host(args.url, args.name)
     elif 'remove' == args.action:

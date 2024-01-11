@@ -28,11 +28,6 @@ def get_container_info(pid):
         print(f"Error: {e}")
         return None, None
 
-def safe_zone(safe=False):
-    global SAFE_ZONE
-    SAFE_ZONE = safe
-
-
 def my_gpustat():
     """
     Returns a [safe] version of gpustat for this host.
@@ -55,32 +50,18 @@ def my_gpustat():
                 continue
             gpu['memory'] = round(float(gpu['memory.used']) /
                                   float(gpu['memory.total']) * 100)
-            if SAFE_ZONE:
-                gpu['users'] = len(set([p['username']
+            gpu['users'] = len(set([p['username']
                                         for p in gpu['processes']]))
-                # user_process = [
-                #     '%s(%s,%sM)' % (p['username'],
-                #                     p['command'], p['gpu_memory_usage'])
-                #     for p in gpu['processes']
-                # ]
-                useful_process = []
-                for p in gpu['processes']:
-                    pid = str(p['pid'])
-                    c_name, e_time = get_container_info(pid)
-                    if c_name:
-                        hrs = str(round(int(e_time) / 3600, 1))
-                        process_str = '%s(%sh, %sG)' % (c_name.split("/")[-1], hrs, round(p['gpu_memory_usage'] / 1024, 1))
-                        useful_process.append(process_str)
-                # gpu['user_processes'] = ' '.join(user_process)
-                gpu['user_processes'] = ' '.join(useful_process)
-            else:
-                gpu['users'] = len(set([p['username']
-                                        for p in gpu['processes']]))
-                processes = len(gpu['processes'])
-                gpu['user_processes'] = '%s/%s' % (gpu['users'], processes)
-                gpu.pop('processes', None)
-                gpu.pop("uuid", None)
-                gpu.pop("query_time", None)
+            useful_process = []
+            for p in gpu['processes']:
+                pid = str(p['pid'])
+                c_name, e_time = get_container_info(pid)
+                if c_name:
+                    hrs = str(round(int(e_time) / 3600, 1))
+                    process_str = '%s(%sh, %sG)' % (c_name.split("/")[-1], hrs, round(p['gpu_memory_usage'] / 1024, 1))
+                    useful_process.append(process_str)
+                    
+            gpu['user_processes'] = ' '.join(useful_process)
 
             gpu['flag'] = 'bg-primary'
             if gpu['temperature.gpu'] > 75:
@@ -193,16 +174,11 @@ def print_hosts():
             print('%02d. %s\t%s' % (idx+1, host[1], host[0]))
 
 
-def install_service(host=None, port=None,
-                    safe_zone=False, exclude_self=False):
+def install_service(host=None, port=None):
     arg = ''
     if host is not None:
         arg += '--host %s ' % host
     if port is not None:
         arg += '--port %s ' % port
-    if safe_zone:
-        arg += '--safe-zone '
-    if exclude_self:
-        arg += '--exclude-self '
     script = os.path.join(ABS_PATH, 'service.sh')
     subprocess.call('{} "{}"'.format(script, arg.strip()), shell=True)
