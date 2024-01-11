@@ -1,14 +1,8 @@
-"""
-Utility functions for gpuview.
-
-@author Fitsum Gaim
-@url https://github.com/fgaim
-"""
-
 import argparse
 
 from gpustat import __version__ as __gpustat__
-from . import __version__
+# from . import __version__
+from __init__ import __version__
 
 
 class _HelpAction(argparse._HelpAction):

@@ -13,8 +13,10 @@ from datetime import datetime
 
 from bottle import Bottle, TEMPLATE_PATH, template, response
 
-from . import utils
-from . import core
+# from . import utils
+# from . import core
+import utils
+import core
 
 
 app = Bottle()

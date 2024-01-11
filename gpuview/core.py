@@ -1,23 +1,32 @@
-"""
-Core functions of gpuview.
-
-@author Fitsum Gaim
-@url https://github.com/fgaim
-"""
-
 import os
 import json
 import subprocess
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib2 import urlopen
-
+from urllib.request import urlopen
 
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
 SAFE_ZONE = False  # Safe to report all details.
 
+def get_container_info(pid):
+    try:
+        # 获取 container_id
+        cmd_get_container_id = "cat /proc/" + pid + "/cgroup | grep -oP '/docker/\K.{12}'"
+        container_id = subprocess.check_output(cmd_get_container_id, shell=True, text=True).strip()
+
+        # 获取 container_name
+        cmd_parts = ["docker", "inspect", "--format", "{{.Name}}", container_id]
+        cmd_get_container_name = " ".join(cmd_parts)        
+        container_name = subprocess.check_output(cmd_get_container_name, shell=True, text=True).strip()
+        
+        # 获取 elapsed_time
+        cmd_parts = ["ps -p ", pid, " -o etimes --no-headers"]
+        cmd_get_running_time = " ".join(cmd_parts)     
+        elapsed_time = subprocess.check_output(cmd_get_running_time, shell=True, text=True).strip()
+
+        return container_name, elapsed_time
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        return None, None
 
 def safe_zone(safe=False):
     global SAFE_ZONE
@@ -49,12 +58,21 @@ def my_gpustat():
             if SAFE_ZONE:
                 gpu['users'] = len(set([p['username']
                                         for p in gpu['processes']]))
-                user_process = [
-                    '%s(%s,%sM)' % (p['username'],
-                                    p['command'], p['gpu_memory_usage'])
-                    for p in gpu['processes']
-                ]
-                gpu['user_processes'] = ' '.join(user_process)
+                # user_process = [
+                #     '%s(%s,%sM)' % (p['username'],
+                #                     p['command'], p['gpu_memory_usage'])
+                #     for p in gpu['processes']
+                # ]
+                useful_process = []
+                for p in gpu['processes']:
+                    pid = str(p['pid'])
+                    c_name, e_time = get_container_info(pid)
+                    if c_name:
+                        hrs = str(round(int(e_time) / 3600, 1))
+                        process_str = '%s(%sh, %sG)' % (c_name.split("/")[-1], hrs, round(p['gpu_memory_usage'] / 1024, 1))
+                        useful_process.append(process_str)
+                # gpu['user_processes'] = ' '.join(user_process)
+                gpu['user_processes'] = ' '.join(useful_process)
             else:
                 gpu['users'] = len(set([p['username']
                                         for p in gpu['processes']]))

@@ -17,7 +17,7 @@
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-        <a class="navbar-brand" href="index.html">gpuview dashboard</a>
+        <a class="navbar-brand" href="https://github.com/HuCutie">GPU Dashboard</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
             data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,7 @@
             <footer class="sticky-footer">
                 <div class="container">
                     <div class="text-center text-white">
-                        <small><a href='https://github.com/fgaim/gpuview'>gpuview</a> © 2018</small>
+                        <small><a href='https://github.com/fgaim/gpuview'>Based on</a> © 2018</small>
                     </div>
                 </div>
             </footer>
