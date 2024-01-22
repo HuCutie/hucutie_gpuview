@@ -31,7 +31,6 @@ def get_container_info(pid):
 def my_gpustat():
     """
     Returns a [safe] version of gpustat for this host.
-        # See `--safe-zone` option of `gpuview start`.
         # Omit sensitive details, eg. uuid, username, and processes.
         # Set color flag based on gpu temperature:
             # bg-warning, bg-danger, bg-success, bg-primary
@@ -50,8 +49,7 @@ def my_gpustat():
                 continue
             gpu['memory'] = round(float(gpu['memory.used']) /
                                   float(gpu['memory.total']) * 100)
-            gpu['users'] = len(set([p['username']
-                                        for p in gpu['processes']]))
+            gpu['users'] = 0
             useful_process = []
             for p in gpu['processes']:
                 pid = str(p['pid'])
@@ -60,16 +58,15 @@ def my_gpustat():
                     hrs = str(round(int(e_time) / 3600, 1))
                     process_str = '%s(%sh, %sG)' % (c_name.split("/")[-1], hrs, round(p['gpu_memory_usage'] / 1024, 1))
                     useful_process.append(process_str)
+                    gpu['users'] = len(useful_process)
                     
             gpu['user_processes'] = ' '.join(useful_process)
 
-            gpu['flag'] = 'bg-primary'
-            if gpu['temperature.gpu'] > 75:
+            gpu['flag'] = 'bg-success'
+            if gpu['temperature.gpu'] > 80:
                 gpu['flag'] = 'bg-danger'
-            elif gpu['temperature.gpu'] > 50:
+            elif gpu['temperature.gpu'] > 60:
                 gpu['flag'] = 'bg-warning'
-            elif gpu['temperature.gpu'] > 25:
-                gpu['flag'] = 'bg-success'
 
         if delete_list:
             for gpu_id in delete_list:
