@@ -46,6 +46,10 @@
                                 <div class="card-body-icon">
                                     <i class="fa fa-server"></i> <b>{{ gpustat.get('hostname', '-') }}</b>
                                 </div>
+                                <div class="cpu-usage">
+                                    <i class="fa fa-microchip" aria-hidden="true"></i> 
+                                    CPU Usage: <b>{{ gpustats[0].get('cpu_usage', '-') }}%</b>
+                                </div>
                                 <div>[{{ gpu.get('index', '') }}] {{ gpu.get('name', '-') }}</div>
                             </div>
                         </div>

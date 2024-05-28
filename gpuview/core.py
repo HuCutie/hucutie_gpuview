@@ -3,6 +3,8 @@ import json
 import subprocess
 from urllib.request import urlopen
 
+import psutil
+
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
 SAFE_ZONE = False  # Safe to report all details.
@@ -43,6 +45,10 @@ def my_gpustat():
         from gpustat import GPUStatCollection
         stat = GPUStatCollection.new_query().jsonify()
         delete_list = []
+
+        # 添加 CPU 使用率
+        cpu_usage = psutil.cpu_percent(interval=1)
+
         for gpu_id, gpu in enumerate(stat['gpus']):
             if type(gpu['processes']) is str:
                 delete_list.append(gpu_id)
@@ -71,6 +77,9 @@ def my_gpustat():
         if delete_list:
             for gpu_id in delete_list:
                 stat['gpus'].pop(gpu_id)
+
+        # 添加 CPU 使用率到结果中
+        stat['cpu_usage'] = cpu_usage
 
         return stat
     except Exception as e:
