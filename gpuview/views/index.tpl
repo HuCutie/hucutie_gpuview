@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="cpu-name">
                                     <i class="fa fa-microchip" aria-hidden="true"></i> 
-                                    {{ gpustats[0].get('cpu_name', '-') }}
+                                    {{ gpustat.get('cpu_name', '-') }}
                                 </div>
                                 <div>[{{ gpu.get('index', '') }}] {{ gpu.get('name', '-') }}</div>
                             </div>
@@ -61,7 +61,7 @@
                                 </span> |
                                 <span class="text-nowrap">
                                 <i class="fa fa-cogs" aria-hidden="true"></i>
-                                CPU-Util. {{ gpustats[0].get('cpu_stat', '-') }}%
+                                CPU-Util. {{ gpustat.get('cpu_stat', '-') }}%
                                 </span> |
                                 <span class="text-nowrap">
                                 <i class="fa fa-users" aria-hidden="true"></i>
