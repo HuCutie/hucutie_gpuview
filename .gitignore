@@ -1,11 +1,12 @@
-__pycache__
+gpuview/__pycache__
 .vscode/
 .pytest_cache/
 .eggs/
 dist/
 build/
 tmp/
-*.egg-info/
-gpuhosts.db
+gpuview/gpuview.egg-info/
+gpuview/gpuhosts.db
 gpuview.log
 pypi.sh
+.circleci/
