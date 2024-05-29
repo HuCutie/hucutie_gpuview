@@ -4,10 +4,17 @@ import subprocess
 from urllib.request import urlopen
 
 import psutil
+import platform
 
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
 SAFE_ZONE = False  # Safe to report all details.
+
+def get_cpu_name_linux():
+    with open('/proc/cpuinfo') as f:
+        for line in f:
+            if 'model name' in line:
+                return line.split(':')[1].strip()
 
 def get_container_info(pid):
     try:
@@ -30,6 +37,16 @@ def get_container_info(pid):
         print(f"Error: {e}")
         return None, None
 
+def get_process_info(pid):
+    try:
+        process = psutil.Process(pid)
+        cpu_usage = process.cpu_percent(interval=1)
+        memory_info = process.memory_info()
+        memory_usage = memory_info.rss / (1024 * 1024 * 1024)
+        return cpu_usage, memory_usage
+    except psutil.NoSuchProcess:
+        return None, None
+
 def my_gpustat():
     """
     Returns a [safe] version of gpustat for this host.
@@ -45,9 +62,12 @@ def my_gpustat():
         from gpustat import GPUStatCollection
         stat = GPUStatCollection.new_query().jsonify()
         delete_list = []
-
-        # 添加 CPU 使用率
-        cpu_usage = psutil.cpu_percent(interval=1)
+        
+        cpu_name = get_cpu_name_linux()
+        cpu_count_logical = psutil.cpu_count(logical=True)
+        server_cpu_usage = psutil.cpu_percent(interval=1)
+        
+        mem = psutil.virtual_memory()
 
         for gpu_id, gpu in enumerate(stat['gpus']):
             if type(gpu['processes']) is str:
@@ -61,8 +81,10 @@ def my_gpustat():
                 pid = str(p['pid'])
                 c_name, e_time = get_container_info(pid)
                 if c_name:
-                    hrs = str(round(int(e_time) / 3600, 1))
+                    hrs = str(round(int(e_time) / 3600, 1))                    
                     process_str = '%s(%sh, %sG)' % (c_name.split("/")[-1], hrs, round(p['gpu_memory_usage'] / 1024, 1))
+                    cpu_usage, memory_usage = get_process_info(int(pid))
+                    process_str += ' (CPU: {}%, Mem: {}GB)'.format(round(cpu_usage, 1), round(memory_usage, 1))
                     useful_process.append(process_str)
                     gpu['users'] = len(useful_process)
                     
@@ -77,9 +99,16 @@ def my_gpustat():
         if delete_list:
             for gpu_id in delete_list:
                 stat['gpus'].pop(gpu_id)
-
-        # 添加 CPU 使用率到结果中
-        stat['cpu_usage'] = cpu_usage
+        
+        used_memory_gb = round(mem.used / (1024 * 1024 * 1024), 1)
+        total_memory_gb = round(mem.total / (1024 * 1024 * 1024), 1)
+        mem_usage = round(used_memory_gb / total_memory_gb * 100, 1)
+        
+        stat['mem_usage'] = str(mem_usage)
+        stat['used_mem'] = str(used_memory_gb)
+        stat['total_mem'] = str(total_memory_gb) + "GiB"
+        stat['cpu_name'] = cpu_name + "(" + str(cpu_count_logical) + ")"
+        stat['cpu_stat'] = str(server_cpu_usage)
 
         return stat
     except Exception as e:

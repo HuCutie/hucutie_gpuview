@@ -46,9 +46,9 @@
                                 <div class="card-body-icon">
                                     <i class="fa fa-server"></i> <b>{{ gpustat.get('hostname', '-') }}</b>
                                 </div>
-                                <div class="cpu-usage">
+                                <div class="cpu-name">
                                     <i class="fa fa-microchip" aria-hidden="true"></i> 
-                                    CPU Usage: <b>{{ gpustats[0].get('cpu_usage', '-') }}%</b>
+                                    {{ gpustats[0].get('cpu_name', '-') }}
                                 </div>
                                 <div>[{{ gpu.get('index', '') }}] {{ gpu.get('name', '-') }}</div>
                             </div>
@@ -57,15 +57,11 @@
                             <span class="float-left">
                                 <span class="text-nowrap">
                                 <i class="fa fa-thermometer-three-quarters" aria-hidden="true"></i>
-                                Temp. {{ gpu.get('temperature.gpu', '-') }}&#8451; 
-                                </span> |
-                                <span class="text-nowrap">
-                                <i class="fa fa-microchip" aria-hidden="true"></i>
-                                Mem. {{ gpu.get('memory', '-') }}% 
+                                GPU-Temp. {{ gpu.get('temperature.gpu', '-') }}&#8451; 
                                 </span> |
                                 <span class="text-nowrap">
                                 <i class="fa fa-cogs" aria-hidden="true"></i>
-                                Util. {{ gpu.get('utilization.gpu', '-') }}%
+                                CPU-Util. {{ gpustats[0].get('cpu_stat', '-') }}%
                                 </span> |
                                 <span class="text-nowrap">
                                 <i class="fa fa-users" aria-hidden="true"></i>
@@ -89,8 +85,8 @@
                                 <tr>
                                     <th scope="col">Host</th>
                                     <th scope="col">GPU</th>
-                                    <th scope="col">Temp.</th>
                                     <th scope="col">Util.</th>
+                                    <th scope="col">GPU Memory Use/Cap</th>
                                     <th scope="col">Memory Use/Cap</th>
                                     <th scope="col">Power Use/Cap</th>
                                     <th scope="col">User Processes</th>
@@ -102,9 +98,9 @@
                                 <tr class="small" id={{ gpustat.get('hostname', '-') }}>
                                     <th scope="row">{{ gpustat.get('hostname', '-') }} </th>
                                     <td> [{{ gpu.get('index', '') }}] {{ gpu.get('name', '-') }} </td>
-                                    <td> {{ gpu.get('temperature.gpu', '-') }}&#8451; </td>
                                     <td> {{ gpu.get('utilization.gpu', '-') }}% </td>
                                     <td> {{ gpu.get('memory', '-') }}% ({{ gpu.get('memory.used', '') }}/{{ gpu.get('memory.total', '-') }}) </td>
+                                    <td> {{ gpustat.get('mem_usage', '-') }}% ({{ gpustat.get('used_mem', '') }}/{{ gpustat.get('total_mem', '-') }}) </td>
                                     <td> {{ gpu.get('power.draw', '-') }} / {{ gpu.get('enforced.power.limit', '-') }} </td>
                                     <td> {{ gpu.get('user_processes', '-') }} </td>
                                 </tr>
