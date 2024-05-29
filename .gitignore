@@ -5,7 +5,7 @@
 dist/
 build/
 tmp/
-gpuview/gpuview.egg-info/
+gpuview.egg-info/
 gpuview/gpuhosts.db
 gpuview.log
 pypi.sh
