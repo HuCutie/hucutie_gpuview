@@ -4,11 +4,9 @@ import subprocess
 from urllib.request import urlopen
 
 import psutil
-import platform
 
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
-SAFE_ZONE = False  # Safe to report all details.
 
 def get_cpu_name_linux():
     with open('/proc/cpuinfo') as f:
@@ -18,16 +16,13 @@ def get_cpu_name_linux():
 
 def get_container_info(pid):
     try:
-        # 获取 container_id
         cmd_get_container_id = "cat /proc/" + pid + "/cgroup | grep -oP '/docker/\K.{12}'"
         container_id = subprocess.check_output(cmd_get_container_id, shell=True, text=True).strip()
 
-        # 获取 container_name
         cmd_parts = ["docker", "inspect", "--format", "{{.Name}}", container_id]
         cmd_get_container_name = " ".join(cmd_parts)        
         container_name = subprocess.check_output(cmd_get_container_name, shell=True, text=True).strip()
-        
-        # 获取 elapsed_time
+
         cmd_parts = ["ps -p ", pid, " -o etimes --no-headers"]
         cmd_get_running_time = " ".join(cmd_parts)     
         elapsed_time = subprocess.check_output(cmd_get_running_time, shell=True, text=True).strip()
