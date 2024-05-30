@@ -70,31 +70,23 @@
                             </span>
                         </div>
                         <div class="card-footer text-white clearfix small z-1">
-                            <div class="w-100"></div>
-                            
-                            <div class="float-left">
+                            <span class="float-left">
                                 % for disk in gpustat.get('ssd_disks', []):
-                                    <div class="text-nowrap">
+                                    <span class="text-nowrap" style="display: block;">
                                         <i class="fa fa-hdd-o" aria-hidden="true"></i>
                                         <b>{{ disk['mountpoint'] }}</b>: {{ disk['used'] }}TB/{{ disk['total'] }}TB ({{ disk['percent'] }}%)
-                                    </div>
+                                    </span>
                                 % end
-                            </div>
-                            
-                            <br>
-                            
-                            <div class="w-100"></div>
-                            
-                            <div class="float-left">
+                            </span>
+                            <span class="float-right">
                                 % for disk in gpustat.get('data_disks', []):
-                                    <div class="text-nowrap">
+                                    <span class="text-nowrap" style="display: block;">
                                         <i class="fa fa-database" aria-hidden="true"></i>
                                         <b>{{ disk['mountpoint'] }}</b>: {{ disk['used'] }}TB/{{ disk['total'] }}TB ({{ disk['percent'] }}%)
-                                    </div>
+                                    </span>
                                 % end
-                            </div>
+                            </span>
                         </div>
-                        
                     </div>
                 </div>
                 % end
