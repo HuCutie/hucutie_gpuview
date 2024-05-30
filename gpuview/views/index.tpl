@@ -71,24 +71,30 @@
                         </div>
                         <div class="card-footer text-white clearfix small z-1">
                             <div class="w-100"></div>
-                            <span class="float-left">
+                            
+                            <div class="float-left">
                                 % for disk in gpustat.get('ssd_disks', []):
-                                    <span class="text-nowrap">
+                                    <div class="text-nowrap">
                                         <i class="fa fa-hdd-o" aria-hidden="true"></i>
                                         <b>{{ disk['mountpoint'] }}</b>: {{ disk['used'] }}TB/{{ disk['total'] }}TB ({{ disk['percent'] }}%)
-                                    </span><br>
+                                    </div>
                                 % end
-                            </span><br>
+                            </div>
+                            
+                            <br>
+                            
                             <div class="w-100"></div>
-                            <span class="float-left">
+                            
+                            <div class="float-left">
                                 % for disk in gpustat.get('data_disks', []):
-                                    <span class="text-nowrap">
+                                    <div class="text-nowrap">
                                         <i class="fa fa-database" aria-hidden="true"></i>
                                         <b>{{ disk['mountpoint'] }}</b>: {{ disk['used'] }}TB/{{ disk['total'] }}TB ({{ disk['percent'] }}%)
-                                    </span><br>
+                                    </div>
                                 % end
-                            </span>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
                 % end
