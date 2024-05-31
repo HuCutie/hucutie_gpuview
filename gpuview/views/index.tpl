@@ -71,6 +71,10 @@
                         </div>
                         <div class="card-footer text-white clearfix small z-1">
                             <span class="float-left">
+                                <span class="text-nowrap" style="display: block;">
+                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                    <b>系统盘</b>: {{ gpustat.get('system_disk_used', '-') }}TB/{{ gpustat.get('system_disk_total', '-') }}TB ({{ gpustat.get('system_disk_percent', '-') }}%)
+                                </span>
                                 % for disk in gpustat.get('ssd_disks', []):
                                     <span class="text-nowrap" style="display: block;">
                                         <i class="fa fa-hdd-o" aria-hidden="true"></i>

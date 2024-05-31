@@ -46,6 +46,7 @@ def get_disk_info():
     partitions = psutil.disk_partitions()
     ssd_info = []
     data_info = []
+    system_info = {}
 
     for partition in partitions:
         usage = psutil.disk_usage(partition.mountpoint)
@@ -61,9 +62,13 @@ def get_disk_info():
             ssd_info.append(disk_info)
         elif partition.mountpoint.startswith('/data'):
             data_info.append(disk_info)
+        elif partition.mountpoint == '/':
+            system_info = disk_info
+
     sorted_ssd_info = sorted(ssd_info, key=lambda g: g['mountpoint'])
     sorted_data_info = sorted(data_info, key=lambda g: g['mountpoint'])
-    return sorted_ssd_info, sorted_data_info
+
+    return sorted_ssd_info, sorted_data_info, system_info
 
 def my_gpustat():
     """
@@ -128,9 +133,12 @@ def my_gpustat():
         stat['cpu_name'] = cpu_name + "(" + str(cpu_count_logical) + ")"
         stat['cpu_stat'] = str(server_cpu_usage)
         
-        ssd_info, data_info = get_disk_info()
+        ssd_info, data_info, system_info = get_disk_info()
         stat['ssd_disks'] = ssd_info
         stat['data_disks'] = data_info
+        stat['system_disk_total'] = system_info['total']
+        stat['system_disk_used'] = system_info['used']
+        stat['system_disk_percent'] = system_info['percent']
 
         return stat
     except Exception as e:
