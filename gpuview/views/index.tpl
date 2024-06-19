@@ -8,17 +8,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>gpuview</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" 
-        rel="stylesheet" type="text/css"/>
-    <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/dataTables.bootstrap4.min.css">
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
         <a class="navbar-brand" href="https://github.com/HuCutie">GPU Dashboard</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
             data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -142,14 +140,10 @@
                 </div>
             </footer>
         </div>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" 
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        <script src="/js/jquery-3.3.1.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.dataTables.min.js"></script>
+        <script src="/js/dataTables.bootstrap4.min.js"></script>
     </div>
 </body>
 

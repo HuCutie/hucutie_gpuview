@@ -11,7 +11,7 @@ import os
 import json
 from datetime import datetime
 
-from bottle import Bottle, TEMPLATE_PATH, template, response
+from bottle import Bottle, TEMPLATE_PATH, template, response, static_file
 
 # from . import utils
 # from . import core
@@ -24,6 +24,19 @@ abs_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_path, 'views')
 TEMPLATE_PATH.insert(0, abs_views_path)
 
+@app.route('/css/<filename:path>')
+def serve_css(filename):
+    print(f"Serving CSS file: {filename}")
+    return static_file(filename, root=os.path.join(abs_path, 'css'))
+
+@app.route('/js/<filename:path>')
+def serve_js(filename):
+    print(f"Serving JS file: {filename}")
+    return static_file(filename, root=os.path.join(abs_path, 'js'))
+
+@app.route('/fonts/<filename:path>')
+def serve_fonts(filename):
+    return static_file(filename, root=os.path.join(abs_path, 'fonts'))
 
 @app.route('/')
 def index():
