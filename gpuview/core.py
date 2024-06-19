@@ -5,6 +5,8 @@ from urllib.request import urlopen
 
 import psutil
 
+import re
+
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
 
@@ -174,7 +176,7 @@ def all_gpustats():
                   (getattr(e, 'message', str(e)), url))
 
     try:
-        sorted_gpustats = sorted(gpustats, key=lambda g: g['hostname'])
+        sorted_gpustats = sorted(gpustats, key=lambda g: (re.findall(r'\d+', g['hostname']), g['hostname']))
         if sorted_gpustats is not None:
             return sorted_gpustats
     except Exception as e:
