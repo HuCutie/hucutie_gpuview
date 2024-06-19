@@ -10,6 +10,9 @@ import re
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
 
+def extract_numbers(s):
+    return [int(d) if d.isdigit() else d for d in re.split(r'(\d+)', s)]
+
 def get_cpu_name_linux():
     with open('/proc/cpuinfo') as f:
         for line in f:
@@ -22,11 +25,11 @@ def get_container_info(pid):
         container_id = subprocess.check_output(cmd_get_container_id, shell=True, text=True).strip()
 
         cmd_parts = ["docker", "inspect", "--format", "{{.Name}}", container_id]
-        cmd_get_container_name = " ".join(cmd_parts)        
+        cmd_get_container_name = " ".join(cmd_parts)
         container_name = subprocess.check_output(cmd_get_container_name, shell=True, text=True).strip()
 
         cmd_parts = ["ps -p ", pid, " -o etimes --no-headers"]
-        cmd_get_running_time = " ".join(cmd_parts)     
+        cmd_get_running_time = " ".join(cmd_parts)
         elapsed_time = subprocess.check_output(cmd_get_running_time, shell=True, text=True).strip()
 
         return container_name, elapsed_time
@@ -176,7 +179,7 @@ def all_gpustats():
                   (getattr(e, 'message', str(e)), url))
 
     try:
-        sorted_gpustats = sorted(gpustats, key=lambda g: (re.findall(r'\d+', g['hostname']), g['hostname']))
+        sorted_gpustats = sorted(gpustats, key=lambda g: extract_numbers(g['hostname']))
         if sorted_gpustats is not None:
             return sorted_gpustats
     except Exception as e:
